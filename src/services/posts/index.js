@@ -76,7 +76,7 @@ postsRouter.post("/:postId/comments", async (req, res, next) => {
     const commentedPost = await PostModel.findByIdAndUpdate(
     req.params.postId, 
     {$push: {comments: newComment}}, 
-    {new: true})
+    {new: true, runValidators: true})
     if (commentedPost) {
       res.send(commentedPost)
     } else {
