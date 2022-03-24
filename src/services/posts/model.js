@@ -12,7 +12,8 @@ const postSchema = new Schema(
     author: {name: {type: String, required: true}, avatar: {type: String, default: "https://picsum.photos/50"}}, 
     comments: [
       {name: {type: String, required: true}, text: {type: String, required: true}, date: {type: Date, required: true}}
-    ]
+    ], 
+    authors: []
   },
   {
     timestamps: true,

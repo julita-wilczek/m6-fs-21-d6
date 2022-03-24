@@ -68,7 +68,7 @@ postsRouter.delete("/:postId", async (req, res, next) => {
   }
 })
 
-export default postsRouter
+
 
 postsRouter.post("/:postId/comments", async (req, res, next) => {
   try {
@@ -161,6 +161,7 @@ postsRouter.delete("/:postId/comments/:commentId", async (req, res, next) => {
       }
       })
 
+export default postsRouter
 
 
 
