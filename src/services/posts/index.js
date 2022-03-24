@@ -36,9 +36,9 @@ postsRouter.get("/", async (req, res, next) => {
 })
 
 //ADD FETCHING ALL POSTS BY AUTHOR ID
-postsRouter.get("/:postId", async (req, res, next) => {
+postsRouter.get("/author/:authorId", async (req, res, next) => {
   try {
-    const post = await PostModel.find()
+    const post = await PostModel.find({authors: req.params.authorId})
     if (post) {
       res.send(post)
     } else {
@@ -49,7 +49,7 @@ postsRouter.get("/:postId", async (req, res, next) => {
   }
 })
 
-postsRouter.get("/author/:authorId", async (req, res, next) => {
+postsRouter.get("/:postId", async (req, res, next) => {
   try {
     const post = await PostModel.findById(req.params.postId).populate({ path: "authors", select: "name"})
     if (post) {
