@@ -1,6 +1,7 @@
 import express from "express"
 import createError from "http-errors"
 import PostModel from "./model.js"
+import q2m from "query-to-mongo"
 
 const postsRouter = express.Router()
 
@@ -17,16 +18,40 @@ postsRouter.post("/", async (req, res, next) => {
 
 postsRouter.get("/", async (req, res, next) => {
   try {
-    const posts = await PostModel.find()
-    res.send(posts)
+    const mongoQuery = q2m(req.query)
+    const total = await PostModel.countDocuments(mongoQuery.criteria)
+    const posts = await PostModel.find(mongoQuery.criteria, mongoQuery.options.fields)
+    .limit(mongoQuery.options.limit || 20)
+    .skip(mongoQuery.options.skip || 0)
+    .sort(mongoQuery.options.sort) // no matter in which order you call this methods, Mongo will ALWAYS do SORT, SKIP, LIMIT in this order
+  res.send({
+    links: mongoQuery.links(`${process.env.API_URL}/posts`, total),
+    total,
+    totalPages: Math.ceil(total / mongoQuery.options.limit),
+    posts
+  })
   } catch (error) {
     next(error)
   }
 })
 
+//ADD FETCHING ALL POSTS BY AUTHOR ID
 postsRouter.get("/:postId", async (req, res, next) => {
   try {
-    const post = await PostModel.findById(req.params.postId)
+    const post = await PostModel.find()
+    if (post) {
+      res.send(post)
+    } else {
+      next(createError(404, `Post with id ${req.params.postId} not found!`))
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
+postsRouter.get("/author/:authorId", async (req, res, next) => {
+  try {
+    const post = await PostModel.findById(req.params.postId).populate({ path: "authors", select: "name"})
     if (post) {
       res.send(post)
     } else {

@@ -4,8 +4,8 @@ const { Schema, model } = mongoose
 
 const AuthorSchema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    name: { type: String, required: true },
+    avatar: { type: String, default: "https://picsum.photos/50"},
   },
   {
     timestamps: true,
