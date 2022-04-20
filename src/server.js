@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 import cors from "cors"
 import postsRouter from "./services/posts/index.js"
 import authorsRouter from "./services/authors/index.js"
-import { badRequestHandler, notFoundHandler, genericErrorHandler } from "./errorHandlers.js"
+import { badRequestHandler, unauthorizedHandler, forbiddenHandler, notFoundHandler, genericErrorHandler } from "./errorHandlers.js"
 
 const server = express()
 const port = process.env.PORT
@@ -16,6 +16,8 @@ server.use("/blogPosts", postsRouter)
 server.use("/authors", authorsRouter)
 
 server.use(badRequestHandler)
+server.use(unauthorizedHandler)
+server.use(forbiddenHandler)
 server.use(notFoundHandler)
 server.use(genericErrorHandler)
 
