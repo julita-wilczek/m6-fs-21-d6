@@ -1,5 +1,6 @@
 import express from "express"
 import createError from "http-errors"
+import { generateAccessToken } from "../../auth/tools.js"
 import AuthorsModel from "./model.js"
 
 const authorsRouter = express.Router()
@@ -13,6 +14,23 @@ authorsRouter.post("/register", async (req, res, next) => {
     next(error)
   }
 })
+
+authorsRouter.post("/login", async (req, res, next) => {
+  try {
+    const {email, password} = req.body
+    const author = await AuthorsModel.checkCredentials(email, password)
+    if (author) {
+      const accessToken = await generateAccessToken({_id: author._id, role: author.role})
+      res.send({ accessToken })
+    } else {
+      next(createError(401, `Wrong credentials`))
+    }
+  
+  } catch (error) {
+    next(error)
+  }
+})
+
 
 authorsRouter.get("/", async (req, res, next) => {
   try {
