@@ -19,8 +19,8 @@ const AuthorSchema = new Schema(
 AuthorSchema.pre("save", async function(next) {
   const author = this
   const plainPassword = author.password
-
-  if (AuthorSchema.isModified("password")) {
+  
+  if (author.isModified("password")) {
     const hashedPassword = await bcrypt.hash(plainPassword, 10)
     author.password = hashedPassword
   }
