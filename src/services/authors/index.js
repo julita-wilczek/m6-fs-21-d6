@@ -1,5 +1,6 @@
 import express from "express"
 import createError from "http-errors"
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
 import { generateAccessToken } from "../../auth/tools.js"
 import AuthorsModel from "./model.js"
 
@@ -32,7 +33,7 @@ authorsRouter.post("/login", async (req, res, next) => {
 })
 
 
-authorsRouter.get("/", async (req, res, next) => {
+authorsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
       const authors = await AuthorsModel.find()
       res.send(authors)
@@ -41,7 +42,7 @@ authorsRouter.get("/", async (req, res, next) => {
   }
 })
 
-authorsRouter.get("/:id", async (req, res, next) => {
+authorsRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
   try {
       const author = await AuthorsModel.findById(req.params.id)
       if (author) {
@@ -54,7 +55,7 @@ authorsRouter.get("/:id", async (req, res, next) => {
   }
 })
 
-authorsRouter.put("/:id", async (req, res, next) => {
+authorsRouter.put("/:id", JWTAuthMiddleware, async (req, res, next) => {
   try {
       const updatedAuthor = await AuthorsModel.findByIdAndUpdate(
           req.params.id,
@@ -71,7 +72,7 @@ authorsRouter.put("/:id", async (req, res, next) => {
   }
 })
 
-authorsRouter.delete("/:id", async (req, res, next) => {
+authorsRouter.delete("/:id", JWTAuthMiddleware, async (req, res, next) => {
   try {
       const deletedAuthor = await AuthorsModel.findByIdAndDelete(req.params.id)
       if (deletedAuthor) {
