@@ -4,7 +4,7 @@ import AuthorsModel from "./model.js"
 
 const authorsRouter = express.Router()
 
-authorsRouter.post("/", async (req, res, next) => {
+authorsRouter.post("/register", async (req, res, next) => {
   try {
     const newAuthor = new AuthorsModel(req.body)
     const { _id } = await newAuthor.save()
