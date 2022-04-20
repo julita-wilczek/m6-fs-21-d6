@@ -27,7 +27,8 @@ AuthorSchema.pre("save", async function(next) {
   next()
 })
 
-AuthorsSchema.statics.checkCredentials = async function(email, plainPassword) {
+// this checks if the password matches the hash stored in db
+AuthorSchema.statics.checkCredentials = async function(email, plainPassword) {
   const author = await this.findOne({email})
   if (author) {
     const isMatch = await bcrypt.compare(plainPassword, author.password)
@@ -40,6 +41,16 @@ AuthorsSchema.statics.checkCredentials = async function(email, plainPassword) {
   } else {
     return null
   }
+}
+
+// this ensures that stored hash is never sent
+AuthorSchema.methods.toJSON = function () {
+  // EVERY TIME Express does a res.send of users documents, this toJSON function is called
+  const authorDocument = this
+  const authorObject = authorDocument.toObject()
+
+  delete authorObject.password
+  return authorObject
 }
 
 export default model("Author", AuthorSchema)
